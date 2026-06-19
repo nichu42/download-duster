@@ -187,12 +187,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render recent activity log
   function renderLogs(logs) {
     if (!logList) return;
+
+    // Clear existing children without using innerHTML
+    while (logList.firstChild) {
+      logList.removeChild(logList.firstChild);
+    }
+
     if (!logs || logs.length === 0) {
-      logList.innerHTML = '<div class="log-empty">No activity logged yet.</div>';
+      const empty = document.createElement('div');
+      empty.className = 'log-empty';
+      empty.textContent = 'No activity logged yet.';
+      logList.appendChild(empty);
       return;
     }
 
-    logList.innerHTML = logs.map(log => {
+    logs.forEach(log => {
       const timeStr = new Date(log.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const dateStr = new Date(log.time).toLocaleDateString([], { month: 'short', day: 'numeric' });
       const trigger = log.trigger || '';
@@ -200,52 +209,111 @@ document.addEventListener('DOMContentLoaded', () => {
       const label = triggerLabels[triggerKey] || trigger || 'Sweep';
       const countText = log.count === 1 ? '1 file' : `${log.count} files`;
       const hasFiles = log.files && log.files.length > 0;
-      
-      return `
-        <div class="log-item trigger-${triggerKey}" ${hasFiles ? 'style="cursor: pointer;"' : ''}>
-          <div class="log-main-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div class="log-info">
-              <span style="font-weight: 500;">${label}</span>
-              <span class="log-time">${dateStr}, ${timeStr}</span>
-            </div>
-            <div class="log-count" style="display: flex; align-items: center; gap: 4px;">
-              <span>${countText}</span>
-              ${hasFiles ? '<span class="log-toggle-icon" style="font-size: 0.6rem; opacity: 0.7;">▼</span>' : ''}
-            </div>
-          </div>
-          ${hasFiles ? `
-            <div class="log-files-list" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.06); width: 100%; display: none;">
-              ${log.files.map(file => {
-                const fTime = new Date(file.downloadedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const fDate = new Date(file.downloadedAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
-                return `
-                  <div class="log-file-entry" style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); padding: 2px 0; gap: 12px; align-items: baseline;">
-                    <span class="log-file-name" style="word-break: break-all; flex-grow: 1; text-align: left;" title="${file.name}">${file.name}</span>
-                    <span class="log-file-time" style="font-size: 0.58rem; opacity: 0.7; flex-shrink: 0;">${fDate}, ${fTime}</span>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          ` : ''}
-        </div>
-      `;
-    }).join('');
 
-    // Add click listeners to toggle file list view
-    const logItems = logList.querySelectorAll('.log-item');
-    logItems.forEach(item => {
-      const filesList = item.querySelector('.log-files-list');
-      if (filesList) {
+      const item = document.createElement('div');
+      item.className = `log-item trigger-${triggerKey}`;
+      if (hasFiles) {
+        item.style.cursor = 'pointer';
+      }
+
+      const mainRow = document.createElement('div');
+      mainRow.className = 'log-main-row';
+      mainRow.style.display = 'flex';
+      mainRow.style.justifyContent = 'space-between';
+      mainRow.style.alignItems = 'center';
+      mainRow.style.width = '100%';
+
+      const info = document.createElement('div');
+      info.className = 'log-info';
+      const labelSpan = document.createElement('span');
+      labelSpan.style.fontWeight = '500';
+      labelSpan.textContent = label;
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'log-time';
+      timeSpan.textContent = `${dateStr}, ${timeStr}`;
+      info.appendChild(labelSpan);
+      info.appendChild(timeSpan);
+
+      const countDiv = document.createElement('div');
+      countDiv.className = 'log-count';
+      countDiv.style.display = 'flex';
+      countDiv.style.alignItems = 'center';
+      countDiv.style.gap = '4px';
+      const countSpan = document.createElement('span');
+      countSpan.textContent = countText;
+      countDiv.appendChild(countSpan);
+
+      if (hasFiles) {
+        const toggleIcon = document.createElement('span');
+        toggleIcon.className = 'log-toggle-icon';
+        toggleIcon.style.fontSize = '0.6rem';
+        toggleIcon.style.opacity = '0.7';
+        toggleIcon.textContent = '▼';
+        countDiv.appendChild(toggleIcon);
+      }
+
+      mainRow.appendChild(info);
+      mainRow.appendChild(countDiv);
+      item.appendChild(mainRow);
+
+      if (hasFiles) {
+        const filesList = document.createElement('div');
+        filesList.className = 'log-files-list';
+        filesList.style.marginTop = '6px';
+        filesList.style.paddingTop = '6px';
+        filesList.style.borderTop = '1px dashed rgba(255,255,255,0.06)';
+        filesList.style.width = '100%';
+        filesList.style.display = 'none';
+
+        log.files.forEach(file => {
+          const fTime = new Date(file.downloadedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const fDate = new Date(file.downloadedAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+          const fileEntry = document.createElement('div');
+          fileEntry.className = 'log-file-entry';
+          fileEntry.style.display = 'flex';
+          fileEntry.style.justifyContent = 'space-between';
+          fileEntry.style.fontSize = '0.68rem';
+          fileEntry.style.color = 'var(--text-muted)';
+          fileEntry.style.padding = '2px 0';
+          fileEntry.style.gap = '12px';
+          fileEntry.style.alignItems = 'baseline';
+
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'log-file-name';
+          nameSpan.style.wordBreak = 'break-all';
+          nameSpan.style.flexGrow = '1';
+          nameSpan.style.textAlign = 'left';
+          // textContent is safe; title attribute is set from the file name
+          // (browser escapes it automatically).
+          nameSpan.textContent = file.name;
+          nameSpan.title = file.name;
+
+          const fTimeSpan = document.createElement('span');
+          fTimeSpan.className = 'log-file-time';
+          fTimeSpan.style.fontSize = '0.58rem';
+          fTimeSpan.style.opacity = '0.7';
+          fTimeSpan.style.flexShrink = '0';
+          fTimeSpan.textContent = `${fDate}, ${fTime}`;
+
+          fileEntry.appendChild(nameSpan);
+          fileEntry.appendChild(fTimeSpan);
+          filesList.appendChild(fileEntry);
+        });
+
+        item.appendChild(filesList);
+
         item.addEventListener('click', () => {
           const isHidden = filesList.style.display === 'none';
           filesList.style.display = isHidden ? 'block' : 'none';
-          
-          const toggleIcon = item.querySelector('.log-toggle-icon');
-          if (toggleIcon) {
-            toggleIcon.textContent = isHidden ? '▲' : '▼';
+          const icon = item.querySelector('.log-toggle-icon');
+          if (icon) {
+            icon.textContent = isHidden ? '▲' : '▼';
           }
         });
       }
+
+      logList.appendChild(item);
     });
   }
 

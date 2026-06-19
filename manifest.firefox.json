@@ -2,7 +2,6 @@
   "manifest_version": 3,
   "name": "Download Duster",
   "version": "1.0.0",
-  "minimum_chrome_version": "88",
   "description": "Automatically sweeps old download history on startup and scheduled intervals to keep your list clean.",
   "homepage_url": "https://codeberg.org/nichu42/download-duster",
   "permissions": [
@@ -12,7 +11,7 @@
     "contextMenus"
   ],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"]
   },
   "action": {
     "default_popup": "popup.html",
@@ -35,6 +34,9 @@
       "data_collection_permissions": {
         "required": ["none"]
       }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
     }
   }
 }

@@ -21,9 +21,14 @@ build_chrome() {
     cp LICENSE manifest.json background.js popup.html popup.css popup.js privacy.md "$CHROME_DIR"
 
     # Copy icons
-    cp -r icons "$CHROME_DIR/icons"
-    rm -f "$CHROME_DIR/icons"/*.ps1
-    rm -f "$CHROME_DIR/icons"/*.html
+    mkdir -p "$CHROME_DIR/icons"
+    cp icons/icon16.png  "$CHROME_DIR/icons/icon16.png"
+    cp icons/icon32.png  "$CHROME_DIR/icons/icon32.png"
+    cp icons/icon48.png  "$CHROME_DIR/icons/icon48.png"
+    cp icons/icon128.png "$CHROME_DIR/icons/icon128.png"
+
+    # Copy assets
+    cp -r assets "$CHROME_DIR/assets"
 
     # Create zip
     (cd "$CHROME_DIR" && zip -r "../download-duster-chrome.zip" .)
@@ -37,13 +42,20 @@ build_firefox() {
     rm -rf "$FIREFOX_DIR"
     mkdir -p "$FIREFOX_DIR"
 
-    # Copy files (uses the same manifest.json)
-    cp LICENSE manifest.json background.js popup.html popup.css popup.js privacy.md "$FIREFOX_DIR"
+    # Copy files (uses the Firefox manifest, which swaps background.service_worker
+    # for background.scripts and sets gecko_android strict_min_version)
+    cp LICENSE background.js popup.html popup.css popup.js privacy.md "$FIREFOX_DIR"
+    cp manifest.firefox.json "$FIREFOX_DIR/manifest.json"
 
     # Copy icons
-    cp -r icons "$FIREFOX_DIR/icons"
-    rm -f "$FIREFOX_DIR/icons"/*.ps1
-    rm -f "$FIREFOX_DIR/icons"/*.html
+    mkdir -p "$FIREFOX_DIR/icons"
+    cp icons/icon16.png  "$FIREFOX_DIR/icons/icon16.png"
+    cp icons/icon32.png  "$FIREFOX_DIR/icons/icon32.png"
+    cp icons/icon48.png  "$FIREFOX_DIR/icons/icon48.png"
+    cp icons/icon128.png "$FIREFOX_DIR/icons/icon128.png"
+
+    # Copy assets
+    cp -r assets "$FIREFOX_DIR/assets"
 
     # Create xpi for local development (release builds are signed via web-ext sign)
     (cd "$FIREFOX_DIR" && zip -r "../download-duster-firefox.xpi" .)
