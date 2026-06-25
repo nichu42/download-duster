@@ -1,7 +1,7 @@
 # <img src="icons/icon48.png" width="38" height="38" align="center" style="vertical-align: middle;"/> Download Duster
 
 [![Latest Release](https://img.shields.io/gitea/v/release/nichu42/download-duster?gitea_url=https://codeberg.org&sort=semver&label=Latest+Release)](https://codeberg.org/nichu42/download-duster/releases)
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/YOUR_CHROME_EXT_ID?logo=google-chrome&logoColor=white&label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/YOUR_CHROME_EXT_ID)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/afnjbdbdhljhnmdjefepfoofbedomcdm?logo=google-chrome&logoColor=white&label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/download-duster/afnjbdbdhljhnmdjefepfoofbedomcdm)
 [![Firefox Add-on](https://img.shields.io/amo/v/download-duster?logo=firefox&logoColor=white&label=Firefox%20Add-on)](https://addons.mozilla.org/firefox/addon/download-duster/)
 [![Liberapay Patrons](https://img.shields.io/liberapay/patrons/nichu42.svg?logo=liberapay)](https://liberapay.com/nichu42/donate)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
@@ -20,34 +20,21 @@ Download Duster operates **entirely locally** on your device and does not collec
 - **🎨 Glassmorphic Dark UI** — Beautiful dark dashboard layout with smooth transitions and hover micro-animations.
 - **🔐 Privacy First** — Zero trackers, telemetry, or server communication.
 
-## 🚀 Quick start
+## 📥 Installation & Quick Start
 
-1. Install the extension for your browser.
-2. Select how long to keep history using the **Keep download history for** slider.
-3. Toggle the **Also delete files from disk** option if you wish to wipe physical files (optional).
-4. Click **Dust Now** to run an immediate manual sweep, or let the extension handle cleanups automatically in the background.
+### 1. Install the extension
 
-## 📥 Installation
+Get the extension for your browser:
 
-### 🌐 Chromium-based browsers (Chrome, Edge, Brave, Vivaldi, etc.)
-Available soon in the Chrome Web Store.
-*(Or see the manual installation section below.)*
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Get_the_Extension-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/download-duster/afnjbdbdhljhnmdjefepfoofbedomcdm) [![Firefox Add-on](https://img.shields.io/badge/Firefox_Add--on-Get_the_Add--on-FF7139?style=for-the-badge&logo=firefox-browser&logoColor=white)](https://addons.mozilla.org/firefox/addon/download-duster/)
 
-### 🦊 Firefox
-Available soon on the Mozilla Add-ons page.
-*(Or see the manual installation section below.)*
+*(For manual installation or developer builds, see [Advanced: Manual Installation](#advanced-manual-installation) below.)*
 
----
+### 2. Configure & Run
 
-## 🔐 Permissions and privacy
-
-Download Duster is built with privacy in mind. It requires the following permissions to operate locally on your device:
-- **`downloads`** — Required to query download history, sweep expired entries, and delete actual files from your disk if enabled.
-- **`alarms`** — Required to trigger background cleanups at regular intervals.
-- **`storage`** — Required to save your configuration, activity logs, and cleanup statistics.
-- **`contextMenus`** — Required to add the "Dust Now" option to the extension's right-click context menu.
-
-All configuration, statistics, and optional activity logs are stored locally on your device in your browser's sandboxed storage (`chrome.storage.local`). Activity logging is turned off by default. The extension is entirely offline and does not connect to external servers, track your habits, or transmit any data.
+1. Open the extension and use the **Keep download history for** slider to select how long download history should be kept.
+2. Toggle the **Also delete files from disk** option if you wish to physically delete the files from your drive (optional).
+3. Click **Dust Now** to run an immediate manual sweep, or let the extension run automatically in the background.
 
 ---
 
@@ -68,16 +55,28 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 ---
 
-### ⚙️ Advanced: Manual Installation
+## 🔐 Permissions and Privacy
 
-#### Chromium-based browsers (Chrome, Edge, Brave, Vivaldi, etc.)
+Download Duster is built with privacy in mind. It requires the following permissions to operate locally on your device:
+- **`downloads`** — Required to query download history, sweep expired entries, and delete actual files from your disk if enabled.
+- **`alarms`** — Required to trigger background cleanups at regular intervals.
+- **`storage`** — Required to save your configuration, activity logs, and cleanup statistics.
+- **`contextMenus`** — Required to add the "Dust Now" option to the extension's right-click context menu.
+
+All configuration, statistics, and optional activity logs are stored locally on your device in your browser's sandboxed storage (`chrome.storage.local`). Activity logging is turned off by default. The extension is entirely offline and does not connect to external servers, track your habits, or transmit any data.
+
+---
+
+## ⚙️ Advanced: Manual Installation
+
+### Chromium-based browsers (Chrome, Edge, Brave, Vivaldi, etc.)
 1. Download `download-duster-chrome.zip` from the [Releases page](https://codeberg.org/nichu42/download-duster/releases).
 2. Unzip the archive.
 3. Open your browser's extensions page (e.g., `chrome://extensions/`).
 4. Enable **Developer mode**.
 5. Click **Load unpacked** and select the unzipped folder.
 
-#### Firefox
+### Firefox
 1. Download `download-duster-firefox.xpi` from the [Releases page](https://codeberg.org/nichu42/download-duster/releases).
 2. Open `about:addons` in Firefox.
 3. Click the gear icon and select **Install Add-on From File...**, then select the `.xpi` file.
@@ -85,6 +84,9 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 ---
 
 ## 🛠️ Development
+
+<details>
+<summary><b>Click to expand development and build instructions</b></summary>
 
 ### Build from source
 Packages are written to the `dist/` directory:
@@ -100,3 +102,5 @@ Packages are written to the `dist/` directory:
 ### Load in browser
 - **Chromium-based**: Open `chrome://extensions/`, enable Developer mode, and click **Load unpacked** pointing to the project root.
 - **Firefox**: Build the project first, then go to `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on...**, and select `dist/firefox/manifest.json`.
+
+</details>
