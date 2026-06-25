@@ -16,6 +16,7 @@ jobs:
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" manifest.json
+          sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" manifest.firefox.json
 
       - name: Build packages
         run: bash build.sh
