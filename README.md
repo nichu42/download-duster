@@ -1,6 +1,6 @@
 # <img src="icons/icon48.png" width="38" height="38" align="center" style="vertical-align: middle;"/> Download Duster
 
-[![Latest Release](https://img.shields.io/gitea/v/release/nichu42/download-duster?gitea_url=https://codeberg.org&sort=semver&label=Latest+Release)](https://codeberg.org/nichu42/download-duster/releases)
+[![Latest Release](https://img.shields.io/github/v/release/nichu42/download-duster?sort=semver&label=Latest+Release)](https://github.com/nichu42/download-duster/releases)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/afnjbdbdhljhnmdjefepfoofbedomcdm?logo=google-chrome&logoColor=white&label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/download-duster/afnjbdbdhljhnmdjefepfoofbedomcdm)
 [![Firefox Add-on](https://img.shields.io/amo/v/download-duster?logo=firefox&logoColor=white&label=Firefox%20Add-on)](https://addons.mozilla.org/firefox/addon/download-duster/)
 [![Liberapay Patrons](https://img.shields.io/liberapay/patrons/nichu42.svg?logo=liberapay)](https://liberapay.com/nichu42/donate)
@@ -40,7 +40,7 @@ Get the extension for your browser:
 
 ## 💬 Issues & Community
 
-Found a bug or have a feature idea? [Open an issue on Codeberg](https://codeberg.org/nichu42/download-duster/issues). Contributions are welcome.
+Found a bug or have a feature idea? [Open an issue on GitHub](https://github.com/nichu42/download-duster/issues). Contributions are welcome.
 
 If you find this extension useful, please consider supporting:
 
@@ -70,14 +70,14 @@ All configuration, statistics, and optional activity logs are stored locally on 
 ## ⚙️ Advanced: Manual Installation
 
 ### Chromium-based browsers (Chrome, Edge, Brave, Vivaldi, etc.)
-1. Download `download-duster-chrome.zip` from the [Releases page](https://codeberg.org/nichu42/download-duster/releases).
+1. Download `download-duster-chrome.zip` from the [Releases page](https://github.com/nichu42/download-duster/releases).
 2. Unzip the archive.
 3. Open your browser's extensions page (e.g., `chrome://extensions/`).
 4. Enable **Developer mode**.
 5. Click **Load unpacked** and select the unzipped folder.
 
 ### Firefox
-1. Download `download-duster-firefox.xpi` from the [Releases page](https://codeberg.org/nichu42/download-duster/releases).
+1. Download `download-duster-firefox.xpi` from the [Releases page](https://github.com/nichu42/download-duster/releases).
 2. Open `about:addons` in Firefox.
 3. Click the gear icon and select **Install Add-on From File...**, then select the `.xpi` file.
 

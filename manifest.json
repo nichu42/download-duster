@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "minimum_chrome_version": "88",
   "description": "Automatically sweeps old download history on startup and scheduled intervals to keep your list clean.",
-  "homepage_url": "https://codeberg.org/nichu42/download-duster",
+  "homepage_url": "https://github.com/nichu42/download-duster",
   "permissions": [
     "downloads",
     "alarms",

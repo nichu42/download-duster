@@ -5,9 +5,12 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   build-and-release:
-    runs-on: codeberg-medium
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -47,14 +50,14 @@ jobs:
           if [ $EXIT -ne 0 ]; then
             if grep -q "already exists" /tmp/web-ext-out.txt; then
               echo "Version already signed on AMO — downloading existing XPI..."
-              python3 .forgejo/amo_download.py
+              python3 .github/scripts/amo_download.py
             elif grep -q "approval" /tmp/web-ext-out.txt; then
               echo "Extension is pending AMO review — downloading XPI via API..."
-              python3 .forgejo/amo_download.py
+              python3 .github/scripts/amo_download.py
             else
               echo "web-ext sign failed with: $(cat /tmp/web-ext-out.txt)"
               echo "Attempting to download existing XPI from AMO as fallback..."
-              if ! python3 .forgejo/amo_download.py; then
+              if ! python3 .github/scripts/amo_download.py; then
                 exit $EXIT
               fi
             fi
@@ -73,41 +76,20 @@ jobs:
             --extension-id "$EXTENSION_ID" \
             --publisher-id "$PUBLISHER_ID"
 
-      - name: Publish release
-        env:
-          FORGEJO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Find signed XPI
         run: |
-          TAG="${GITHUB_REF_NAME}"
-          IS_PRE=false
-          [[ "$TAG" == *"-"* ]] && IS_PRE=true
-
-          # Wait briefly for AMO to finish processing after download
-          sleep 5
-
-          # Verify we have an XPI before publishing
           SIGNED_XPI=$(find dist -maxdepth 1 -name "*.xpi" | head -1)
           if [ -z "$SIGNED_XPI" ]; then
             echo "ERROR: No signed XPI found in dist/"
             exit 1
           fi
           echo "Found signed XPI: $SIGNED_XPI"
+          echo "SIGNED_XPI=$SIGNED_XPI" >> "$GITHUB_ENV"
 
-          RELEASE=$(curl -sf -X POST \
-            -H "Authorization: token ${FORGEJO_TOKEN}" \
-            -H "Content-Type: application/json" \
-            "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases" \
-            -d "{\"tag_name\":\"${TAG}\",\"name\":\"${TAG}\",\"prerelease\":${IS_PRE}}")
-
-          RELEASE_ID=$(echo "$RELEASE" | jq -r '.id')
-
-          curl -sf -X POST \
-            -H "Authorization: token ${FORGEJO_TOKEN}" \
-            -H "Content-Type: application/octet-stream" \
-            "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=download-duster-chrome.zip" \
-            --data-binary @dist/download-duster-chrome.zip
-
-          curl -sf -X POST \
-            -H "Authorization: token ${FORGEJO_TOKEN}" \
-            -H "Content-Type: application/octet-stream" \
-            "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=download-duster-firefox.xpi" \
-            --data-binary @"$SIGNED_XPI"
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/download-duster-chrome.zip
+            ${{ env.SIGNED_XPI }}
+          prerelease: ${{ contains(github.ref_name, '-') }}

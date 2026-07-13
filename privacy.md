@@ -30,4 +30,4 @@ If you choose to enable the **"Also delete files from disk"** setting:
 
 ## 5. Contact & Support
 Download Duster is an open-source project. You can inspect the source code, report bugs, or contact the maintainers at:
-https://codeberg.org/nichu42/download-duster
+https://github.com/nichu42/download-duster
