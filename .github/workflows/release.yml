@@ -32,6 +32,8 @@ jobs:
           node-version: "20"
 
       - name: Sign Firefox extension
+        id: sign_firefox
+        continue-on-error: true
         env:
           AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
           AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
@@ -63,7 +65,35 @@ jobs:
             fi
           fi
 
+      - name: Find signed XPI
+        id: find_xpi
+        run: |
+          SIGNED_XPI=$(find dist -maxdepth 1 -name "*.xpi" | head -1)
+          if [ -n "$SIGNED_XPI" ]; then
+            echo "Found signed XPI: $SIGNED_XPI"
+            echo "signed_xpi=$SIGNED_XPI" >> "$GITHUB_OUTPUT"
+          else
+            echo "No signed XPI found — will release Chrome package only"
+          fi
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          allowUpdates: true
+          files: dist/download-duster-chrome.zip
+          prerelease: ${{ contains(github.ref_name, '-') }}
+
+      - name: Attach Firefox XPI to release
+        if: steps.find_xpi.outputs.signed_xpi != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          allowUpdates: true
+          files: ${{ steps.find_xpi.outputs.signed_xpi }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
+
       - name: Upload & Publish to Chrome Web Store
+        id: upload_chrome
+        continue-on-error: true
         env:
           CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
@@ -75,21 +105,3 @@ jobs:
             --source dist/download-duster-chrome.zip \
             --extension-id "$EXTENSION_ID" \
             --publisher-id "$PUBLISHER_ID"
-
-      - name: Find signed XPI
-        run: |
-          SIGNED_XPI=$(find dist -maxdepth 1 -name "*.xpi" | head -1)
-          if [ -z "$SIGNED_XPI" ]; then
-            echo "ERROR: No signed XPI found in dist/"
-            exit 1
-          fi
-          echo "Found signed XPI: $SIGNED_XPI"
-          echo "SIGNED_XPI=$SIGNED_XPI" >> "$GITHUB_ENV"
-
-      - name: Publish GitHub release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/download-duster-chrome.zip
-            ${{ env.SIGNED_XPI }}
-          prerelease: ${{ contains(github.ref_name, '-') }}
